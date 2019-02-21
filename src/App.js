@@ -1,12 +1,17 @@
 import React, { useState } from 'react'
 
-const Menu = () => (
-  <div>
-    <a href='#'>anecdotes</a>&nbsp;
-    <a href='#'>create new</a>&nbsp;
-    <a href='#'>about</a>&nbsp;
-  </div>
-)
+const Menu = () => {
+  const padding = {
+    paddingRight: 5
+  }
+  return (
+    <div>
+      <a href='#' style={padding}>anecdotes</a>
+      <a href='#' style={padding}>create new</a>
+      <a href='#' style={padding}>about</a>
+    </div>
+  )
+}
 
 const AnecdoteList = ({ anecdotes }) => (
   <div>
@@ -33,9 +38,9 @@ const About = () => (
 
 const Footer = () => (
   <div>
-    Anecdote app for <a href='https://courses.helsinki.fi/fi/TKT21009/121540749'>Full Stack -sovelluskehitys</a>.
+    Anecdote app for <a href='https://courses.helsinki.fi/fi/tkt21009'>Full Stack -sovelluskehitys</a>.
 
-    See <a href='https://github.com/mluukkai/routed-anecdotes'>https://github.com/mluukkai/routed-anecdotes</a> for the source code.
+    See <a href='https://github.com/fullstack-hy2019/routed-anecdotes/blob/master/src/App.js'>https://github.com/fullstack-hy2019/routed-anecdotes/blob/master/src/App.js</a> for the source code.
   </div>
 )
 
