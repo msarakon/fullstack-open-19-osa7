@@ -2,6 +2,8 @@ import React from 'react'
 import { render, waitForElement, act, cleanup } from 'react-testing-library'
 jest.mock('./services/blogs')
 import App from './App'
+import { Provider } from 'react-redux'
+import store from './store'
 
 afterEach(cleanup)
 
@@ -9,7 +11,7 @@ describe('App', () => {
 
   it('should not display any blogs if the user is not signed in', async () => {
     let content
-    act(() => { content = render(<App />) })
+    act(() => { content = render(<Provider store={store}><App /></Provider>) })
   
     await waitForElement(() => content.getByText('log in'))
     expect(content.container.querySelectorAll('.blog-row').length).toBe(0)
@@ -25,7 +27,7 @@ describe('App', () => {
   
     localStorage.setItem('loggedBlogAppUser', JSON.stringify(user))
 
-    act(() => { content = render(<App />) })
+    act(() => { content = render(<Provider store={store}><App /></Provider>) })
 
     await waitForElement(() => content.getByText('Tester Guy logged in'))
     await waitForElement(() => content.getByText(

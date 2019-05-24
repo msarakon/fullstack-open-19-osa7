@@ -1,19 +1,17 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
-import loginService from './services/login'
 import blogService from './services/blogs'
 import useField from './hooks/index'
+import { login, setUser } from './reducers/loginReducer'
 import { initBlogs, createBlog, updateBlog, removeBlog } from './reducers/blogReducer'
 import { setNotification } from './reducers/notificationReducer'
 
 const App = (props) => {
-  const [user, setUser] = useState(null)
-
   const init = props.initBlogs
 
   const username = useField('text')
@@ -24,7 +22,7 @@ const App = (props) => {
     if (loggedUser) {
       const user = JSON.parse(loggedUser)
       blogService.setToken(user.token)
-      setUser(user)
+      props.setUser(user)
     }
   }, [])
 
@@ -43,13 +41,13 @@ const App = (props) => {
   const handleLogin = async (event) => {
     event.preventDefault()
     try {
-      const user = await loginService.login({
+      const user = props.login({
         username: username.input.value,
         password: password.input.value
       })
       window.localStorage.setItem('loggedBlogAppUser', JSON.stringify(user))
       blogService.setToken(user.token)
-      setUser(user)
+      props.setUser(user)
       username.reset()
       password.reset()
     } catch (exception) {
@@ -59,7 +57,7 @@ const App = (props) => {
   }
 
   const handleLogOut = () => {
-    setUser(null)
+    props.setUser(null)
     window.localStorage.removeItem('loggedBlogAppUser')
   }
 
@@ -106,7 +104,7 @@ const App = (props) => {
         blog={blog}
         update={(blog) => updateBlog(blog)}
         remove={(blog) => removeBlog(blog)}
-        loggedUser={user} />
+        loggedUser={props.loggedUser} />
     )
   )
 
@@ -115,10 +113,10 @@ const App = (props) => {
       <h1>blogs</h1>
       <Notification />
       {
-        user === null ? loginForm() :
+        props.loggedUser === null ? loginForm() :
           <div>
             <p>
-              {user.name} logged in <button onClick={handleLogOut}>log out</button>
+              {props.loggedUser.name} logged in <button onClick={handleLogOut}>log out</button>
             </p>
             <Togglable buttonLabel='create a new blog'>
               <BlogForm save={createBlog} />
@@ -136,11 +134,14 @@ const sortedBlogs = ({ blogs }) => {
 
 const mapStateToProps = (state) => {
   return {
+    loggedUser: state.loggedUser,
     blogs: sortedBlogs(state)
   }
 }
 
 const mapDispatchToProps = {
+  setUser,
+  login,
   initBlogs,
   createBlog,
   updateBlog,
@@ -149,6 +150,9 @@ const mapDispatchToProps = {
 }
 
 App.propTypes = {
+  loggedUser: PropTypes.object,
+  setUser: PropTypes.func.isRequired,
+  login: PropTypes.func.isRequired,
   initBlogs: PropTypes.func.isRequired,
   blogs: PropTypes.array,
   createBlog: PropTypes.func.isRequired,
