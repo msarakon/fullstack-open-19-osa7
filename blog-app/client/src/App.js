@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react'
+import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
@@ -6,11 +8,11 @@ import Togglable from './components/Togglable'
 import loginService from './services/login'
 import blogService from './services/blogs'
 import useField from './hooks/index'
+import { setNotification } from './reducers/notificationReducer'
 
-const App = () => {
+const App = (props) => {
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
-  const [notification, setNotification] = useState({ msg: '', style: null })
 
   const username = useField('text')
   const password = useField('password')
@@ -31,13 +33,11 @@ const App = () => {
   }, [])
 
   const showNotification = msg => {
-    setNotification({ msg: msg, style: null })
-    setTimeout(() => setNotification({ msg: '', style: null }), 2000)
+    props.setNotification({ message: msg, style: null }, 2000)
   }
 
   const showError = msg => {
-    setNotification({ msg: msg, style: 'error' })
-    setTimeout(() => setNotification({ msg: '', style: null }), 2000)
+    props.setNotification({ message: msg, style: 'error' }, 2000)
   }
 
   const handleLogin = async (event) => {
@@ -116,7 +116,7 @@ const App = () => {
   return (
     <div>
       <h1>blogs</h1>
-      <Notification message={notification.msg} style={notification.style} />
+      <Notification />
       {
         user === null ? loginForm() :
           <div>
@@ -133,4 +133,10 @@ const App = () => {
   )
 }
 
-export default App
+App.propTypes = {
+  setNotification: PropTypes.func.isRequired,
+}
+
+const mapDispatchToProps = { setNotification }
+
+export default connect(null, mapDispatchToProps)(App)

@@ -9,7 +9,7 @@ const Blog = ({ blog, update, remove, loggedUser }) => {
   const toggleFullInfo = () => setFullInfo(!fullInfo)
 
   const like = () =>
-    update({...blog, likes: blog.likes + 1 })
+    update({...blog, likes: blog.likes + 1, user: blog.user ? blog.user.id : null })
 
   return (
     <div className="blog-row" onClick={toggleFullInfo}>
