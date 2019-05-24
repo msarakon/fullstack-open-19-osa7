@@ -8,11 +8,13 @@ import Togglable from './components/Togglable'
 import loginService from './services/login'
 import blogService from './services/blogs'
 import useField from './hooks/index'
+import { initBlogs, createBlog, updateBlog, removeBlog } from './reducers/blogReducer'
 import { setNotification } from './reducers/notificationReducer'
 
 const App = (props) => {
-  const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
+
+  const init = props.initBlogs
 
   const username = useField('text')
   const password = useField('password')
@@ -27,10 +29,8 @@ const App = (props) => {
   }, [])
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs( blogs )
-    )  
-  }, [])
+    init()
+  }, [init])
 
   const showNotification = msg => {
     props.setNotification({ message: msg, style: null }, 2000)
@@ -65,9 +65,8 @@ const App = (props) => {
 
   const createBlog = async (title, author, url) => {
     try {
-      const blog = await blogService.create({ title, author, url })
-      setBlogs(blogs.concat(blog))
-      showNotification(`a new blog "${blog.title}" by ${blog.author} added`)
+      props.createBlog({ title, author, url })
+      showNotification(`a new blog "${title}" by ${author} added`)
     } catch (exception) {
       showError('failed to create a new blog')
     }
@@ -75,8 +74,7 @@ const App = (props) => {
 
   const updateBlog = async (blog) => {
     try {
-      const updated = await blogService.update(blog)
-      setBlogs(blogs.map(b => b.id === updated.id ? updated : b))
+      props.updateBlog(blog)
       showNotification(`"blog ${blog.title}" updated`)
     } catch (exception) {
       showError('failed to update the blog')
@@ -86,8 +84,7 @@ const App = (props) => {
   const removeBlog = async (blog) => {
     if (window.confirm(`Are you sure you want to remove "${blog.title}" by ${blog.author}?`)) {
       try {
-        await blogService.remove(blog.id)
-        setBlogs(blogs.filter(b => b.id !== blog.id))
+        props.removeBlog(blog.id)
         showNotification(`"blog ${blog.title}" deleted`)
       } catch (exception) {
         showError('failed to remove the blog')
@@ -104,7 +101,7 @@ const App = (props) => {
   )
 
   const blogList = () => (
-    blogs.sort((b1, b2) => b2.likes - b1.likes).map(blog =>
+    props.blogs.map(blog =>
       <Blog key={blog.id}
         blog={blog}
         update={(blog) => updateBlog(blog)}
@@ -133,10 +130,31 @@ const App = (props) => {
   )
 }
 
-App.propTypes = {
-  setNotification: PropTypes.func.isRequired,
+const sortedBlogs = ({ blogs }) => {
+  return blogs.sort((b1, b2) => b2.likes - b1.likes)
 }
 
-const mapDispatchToProps = { setNotification }
+const mapStateToProps = (state) => {
+  return {
+    blogs: sortedBlogs(state)
+  }
+}
 
-export default connect(null, mapDispatchToProps)(App)
+const mapDispatchToProps = {
+  initBlogs,
+  createBlog,
+  updateBlog,
+  removeBlog,
+  setNotification
+}
+
+App.propTypes = {
+  initBlogs: PropTypes.func.isRequired,
+  blogs: PropTypes.array,
+  createBlog: PropTypes.func.isRequired,
+  updateBlog: PropTypes.func.isRequired,
+  removeBlog: PropTypes.func.isRequired,
+  setNotification: PropTypes.func.isRequired
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App)
