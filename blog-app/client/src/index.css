@@ -1,0 +1,22 @@
+.notification {
+    color: green;
+    background: lightgrey;
+    border-style: solid;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+  
+ .notification.error {
+ color: red;
+}
+
+.blog-row {
+  border: 1px solid black;
+  margin: .5em 0;
+  padding: .2em .5em;
+}
+
+.blog-row:hover {
+  cursor: pointer;
+}
