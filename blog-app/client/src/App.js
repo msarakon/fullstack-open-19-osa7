@@ -7,6 +7,7 @@ import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import UserList from './components/UserList'
+import User from './components/User'
 import useField from './hooks/index'
 import { login, logout, fetchUser } from './reducers/loginReducer'
 import { initBlogs } from './reducers/blogReducer'
@@ -55,6 +56,9 @@ const App = (props) => {
   const blogList = () =>
     props.blogs.map(blog => <Blog key={blog.id} blog={blog} />)
 
+  const userById = (id) =>
+    props.users.find(user => user.id === id)
+
   return (
     <div>
       <h1>blogs</h1>
@@ -76,7 +80,10 @@ const App = (props) => {
               } />
             </div>
         }
-        <Route path='/users' render={() => <UserList /> } />
+        <Route exact path='/users' render={() => <UserList /> } />
+        <Route path='/users/:id' render={({ match }) => 
+          <User user={userById(match.params.id)} />
+        } />
       </Router>
     </div>
   )
@@ -89,7 +96,8 @@ const sortedBlogs = ({ blogs }) => {
 const mapStateToProps = (state) => {
   return {
     loggedUser: state.loggedUser,
-    blogs: sortedBlogs(state)
+    blogs: sortedBlogs(state),
+    users: state.users
   }
 }
 
@@ -110,6 +118,7 @@ App.propTypes = {
   initBlogs: PropTypes.func.isRequired,
   initUsers: PropTypes.func.isRequired,
   blogs: PropTypes.array,
+  users: PropTypes.array,
   setNotification: PropTypes.func.isRequired
 }
 
