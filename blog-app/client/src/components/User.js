@@ -9,16 +9,20 @@ const User = ({ user }) => {
     <div>
       <Header as='h2'>{user.name}</Header>
       <Header as='h3'>added blogs</Header>
-      <List>
-        {
-          user.blogs.map(blog =>
-            <List.Item key={blog.id}>
-              <List.Icon name='newspaper outline' />
-              <List.Content>{blog.title}</List.Content>
-            </List.Item>
-          )
-        }
-      </List>
+      {
+        user.blogs.length > 0 ?
+          <List>
+            {
+              user.blogs.map(blog =>
+                <List.Item key={blog.id}>
+                  <List.Icon name='newspaper outline' />
+                  <List.Content>{blog.title}</List.Content>
+                </List.Item>
+              )
+            }
+          </List>
+          : <span>nothing yet!</span>
+      }
     </div>
   )
 }

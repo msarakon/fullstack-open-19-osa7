@@ -11,13 +11,16 @@ const BlogForm = (props) => {
   const author = useField('text')
   const url = useField('text')
 
-  const create = (title, author, url) => {
+  const create = (blog) => {
     try {
-      props.createBlog({ title, author, url })
+      props.createBlog(blog)
       props.setNotification({
-        message: `a new blog "${title}" by ${author} added`,
+        message: `a new blog "${blog.title}" by ${blog.author} added`,
         style: null
       }, 2000)
+      title.reset()
+      author.reset()
+      url.reset()
     } catch (exception) {
       props.setNotification({
         message: 'failed to create a new blog',
@@ -28,11 +31,11 @@ const BlogForm = (props) => {
 
   const submit = (event) => {
     event.preventDefault()
-    create(
-      title.input.value,
-      author.input.value,
-      url.input.value
-    )
+    create({
+      title: title.input.value,
+      author: author.input.value,
+      url: url.input.value
+    })
   }
 
   return (

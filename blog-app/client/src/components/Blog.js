@@ -65,12 +65,12 @@ const Blog = (props) => {
           like
         </Button>
       </p>
-      {
-        blog.user && <p>added by {blog.user.name}</p>
-      }
+      <p>added by {blog.user ? blog.user.name : '?'}</p>
       <Divider />
       <Header as='h3'>comments</Header>
-      <Input {...comment.input} action={<Button onClick={addComment}>add comment</Button>} />
+      <Input {...comment.input} action={
+        <Button primary onClick={addComment}>add comment</Button>
+      } />
       <List>
         {
           blog.comments.map(comment =>
