@@ -39,6 +39,12 @@ const Blog = (props) => {
       {
         blog.user && <p>added by {blog.user.name}</p>
       }
+      <h3>comments</h3>
+      <ul>
+        {
+          blog.comments.map(comment => <li key={comment.id}>{comment.comment}</li>)
+        }
+      </ul>
     </div>
   )
 }

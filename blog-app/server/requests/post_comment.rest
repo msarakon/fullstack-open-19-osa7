@@ -1,0 +1,6 @@
+POST http://localhost:3003/api/blogs/5cdd9c0e48af35287c0265af/comments
+content-type: application/json
+
+{
+  "comment": "Tämä on kommentti"
+}
