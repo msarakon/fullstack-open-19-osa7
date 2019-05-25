@@ -1,3 +1,12 @@
+.navigation {
+  background: lightgrey;
+  padding: .5em;
+}
+
+.navigation a {
+  padding-right: 1em;
+}
+
 .notification {
   color: green;
   background: lightgrey;

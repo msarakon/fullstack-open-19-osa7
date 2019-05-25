@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { BrowserRouter as Router, Route } from 'react-router-dom'
+import Navigation from './components/Navigation'
 import Blog from './components/Blog'
 import BlogRow from './components/BlogRow'
 import BlogForm from './components/BlogForm'
@@ -10,7 +11,7 @@ import Togglable from './components/Togglable'
 import UserList from './components/UserList'
 import User from './components/User'
 import useField from './hooks/index'
-import { login, logout, fetchUser } from './reducers/loginReducer'
+import { login, fetchUser } from './reducers/loginReducer'
 import { initBlogs } from './reducers/blogReducer'
 import { setNotification } from './reducers/notificationReducer'
 import { initUsers } from './reducers/userReducer'
@@ -44,8 +45,6 @@ const App = (props) => {
     }
   }
 
-  const handleLogOut = () => props.logout()
-
   const loginForm = () => (
     <form onSubmit={handleLogin}>
       <div>username <input {...username.input} /></div>
@@ -65,33 +64,29 @@ const App = (props) => {
 
   return (
     <div>
-      <h1>blogs</h1>
-      <Notification />
-      <Router>
-        {
-          props.loggedUser === null ? loginForm() :
-            <div>
-              <p>
-                {props.loggedUser.name} logged in <button onClick={handleLogOut}>log out</button>
-              </p>
-              <Route exact path='/' render={() =>
-                <div>
-                  <Togglable buttonLabel='create a new blog'>
-                    <BlogForm />
-                  </Togglable>
-                  {blogList()}
-                </div>
-              } />
-            </div>
-        }
-        <Route exact path='/users' render={() => <UserList /> } />
-        <Route path='/users/:id' render={({ match }) => 
-          <User user={userById(match.params.id)} />
-        } />
-        <Route path='/blogs/:id' render={({ match }) => 
-          <Blog blog={blogById(match.params.id)} />
-        } />
-      </Router>
+      {
+        props.loggedUser === null ? loginForm() :
+          <Router>
+            <Navigation />
+            <h1>blogs</h1>
+            <Notification />
+            <Route exact path='/' render={() =>
+              <div>
+                <Togglable buttonLabel='create a new blog'>
+                  <BlogForm />
+                </Togglable>
+                {blogList()}
+              </div>
+            } />
+            <Route exact path='/users' render={() => <UserList /> } />
+            <Route path='/users/:id' render={({ match }) => 
+              <User user={userById(match.params.id)} />
+            } />
+            <Route path='/blogs/:id' render={({ match }) => 
+              <Blog blog={blogById(match.params.id)} />
+            } />
+          </Router>
+      }
     </div>
   )
 }
@@ -111,7 +106,6 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = {
   fetchUser,
   login,
-  logout,
   initBlogs,
   initUsers,
   setNotification
@@ -120,7 +114,6 @@ const mapDispatchToProps = {
 App.propTypes = {
   loggedUser: PropTypes.object,
   fetchUser: PropTypes.func.isRequired,
-  logout: PropTypes.func.isRequired,
   login: PropTypes.func.isRequired,
   initBlogs: PropTypes.func.isRequired,
   initUsers: PropTypes.func.isRequired,
