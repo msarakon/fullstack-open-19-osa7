@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { BrowserRouter as Router, Route } from 'react-router-dom'
 import Blog from './components/Blog'
+import BlogRow from './components/BlogRow'
 import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
@@ -54,7 +55,10 @@ const App = (props) => {
   )
 
   const blogList = () =>
-    props.blogs.map(blog => <Blog key={blog.id} blog={blog} />)
+    props.blogs.map(blog => <BlogRow key={blog.id} blog={blog} />)
+
+  const blogById = (id) =>
+    props.blogs.find(blog => blog.id === id)
 
   const userById = (id) =>
     props.users.find(user => user.id === id)
@@ -83,6 +87,9 @@ const App = (props) => {
         <Route exact path='/users' render={() => <UserList /> } />
         <Route path='/users/:id' render={({ match }) => 
           <User user={userById(match.params.id)} />
+        } />
+        <Route path='/blogs/:id' render={({ match }) => 
+          <Blog blog={blogById(match.params.id)} />
         } />
       </Router>
     </div>

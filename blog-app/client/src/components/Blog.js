@@ -1,16 +1,12 @@
-import React, { useState } from 'react'
-import { connect } from 'react-redux'
+import React from 'react'
 import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 import { updateBlog, removeBlog } from '../reducers/blogReducer'
 import { setNotification } from '../reducers/notificationReducer'
 
 const Blog = (props) => {
-  const [fullInfo, setFullInfo] = useState(false)
   const blog = props.blog
-
-  const showWhenVisible = { display: fullInfo ? '' : 'none' }
-
-  const toggleFullInfo = () => setFullInfo(!fullInfo)
+  if (!blog) return null
 
   const update = async (blog) => {
     try {
@@ -27,23 +23,6 @@ const Blog = (props) => {
     }
   }
 
-  const remove = async (blog) => {
-    if (window.confirm(`Are you sure you want to remove "${blog.title}" by ${blog.author}?`)) {
-      try {
-        await props.removeBlog(blog.id)
-        props.setNotification({
-          message: `blog "${blog.title}" deleted`,
-          style: null
-        }, 2000)
-      } catch (exception) {
-        props.setNotification({
-          message: 'failed to remove the blog',
-          style: 'error'
-        }, 2000)
-      }
-    }
-  }
-
   const like = () =>
     update({
       ...blog,
@@ -52,29 +31,16 @@ const Blog = (props) => {
     })
 
   return (
-    <div className="blog-row" onClick={toggleFullInfo}>
-      <div className="blog-title">{blog.title} ({blog.author})</div>
-      <div className="blog-full-info" style={showWhenVisible}>
-        <div><a href={blog.url}>{blog.url}</a></div>
-        <div>
-          {blog.likes} likes <button onClick={like}>like</button>
-        </div>
-        <div>
-          {
-            blog.user && <div>added by {blog.user.name}</div> &&
-            props.loggedUser.username === blog.user.username &&
-            <button onClick={() => remove(blog)}>remove</button>
-          }
-        </div>
-      </div>
+    <div>
+      <h2>{blog.title} {blog.author}</h2>
+      <p>
+        blog has {blog.likes} likes <button onClick={like}>like</button>
+      </p>
+      {
+        blog.user && <p>added by {blog.user.name}</p>
+      }
     </div>
   )
-}
-
-const mapStateToProps = (state) => {
-  return {
-    loggedUser: state.loggedUser
-  }
 }
 
 const mapDispatchToProps = {
@@ -84,11 +50,10 @@ const mapDispatchToProps = {
 }
 
 Blog.propTypes = {
-  blog: PropTypes.object.isRequired,
+  blog: PropTypes.object,
   updateBlog: PropTypes.func.isRequired,
   removeBlog: PropTypes.func.isRequired,
-  loggedUser: PropTypes.object,
   setNotification: PropTypes.func.isRequired
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Blog)
+export default connect(null, mapDispatchToProps)(Blog)
