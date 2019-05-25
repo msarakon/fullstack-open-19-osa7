@@ -11,9 +11,9 @@ const BlogForm = (props) => {
   const author = useField('text')
   const url = useField('text')
 
-  const create = (blog) => {
+  const create = async (blog) => {
     try {
-      props.createBlog(blog)
+      await props.createBlog(blog)
       props.setNotification({
         message: `a new blog "${blog.title}" by ${blog.author} added`,
         style: null
@@ -40,7 +40,7 @@ const BlogForm = (props) => {
 
   return (
     <Form onSubmit={submit}>
-      <Form.Field>
+      <Form.Field required>
         <label>title</label>
         <input id='new-blog-title' {...title.input} />
       </Form.Field>
@@ -48,7 +48,7 @@ const BlogForm = (props) => {
         <label>author</label>
         <input id='new-blog-author' {...author.input} />
       </Form.Field>
-      <Form.Field>
+      <Form.Field required>
         <label>url</label>
         <input id='new-blog-url' {...url.input} />
       </Form.Field>
