@@ -6,13 +6,7 @@ const BlogRow = (props) => {
   const blog = props.blog
 
   return (
-    <div className="blog-row">
-      <div className="blog-title">
-        <Link to={`blogs/${blog.id}`}>
-          {blog.title} ({blog.author})
-        </Link>
-      </div>
-    </div>
+    <Link to={`blogs/${blog.id}`}>{blog.title} ({blog.author})</Link>
   )
 }
 

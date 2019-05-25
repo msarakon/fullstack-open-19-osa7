@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import { Button, Divider, Header, Input, Icon, List } from 'semantic-ui-react'
 import useField from '../hooks/index'
 import { updateBlog, removeBlog, addComment } from '../reducers/blogReducer'
 import { setNotification } from '../reducers/notificationReducer'
@@ -28,7 +29,10 @@ const Blog = (props) => {
 
   const like = () =>
     update({
-      ...blog,
+      id: blog.id,
+      title: blog.title,
+      author: blog.author,
+      url: blog.url,
       likes: blog.likes + 1,
       user: blog.user ? blog.user.id : null
     })
@@ -54,22 +58,29 @@ const Blog = (props) => {
 
   return (
     <div>
-      <h2>{blog.title} {blog.author}</h2>
+      <Header as='h2'>{blog.title} {blog.author}</Header>
       <p>
-        blog has {blog.likes} likes <button onClick={like}>like</button>
+        blog has {blog.likes} likes <Button compact icon onClick={like}>
+          <Icon name='like' />
+          like
+        </Button>
       </p>
       {
         blog.user && <p>added by {blog.user.name}</p>
       }
-      <h3>comments</h3>
-      <p>
-        <input {...comment.input} /> <button onClick={addComment}>add comment</button>
-      </p>
-      <ul>
+      <Divider />
+      <Header as='h3'>comments</Header>
+      <Input {...comment.input} action={<Button onClick={addComment}>add comment</Button>} />
+      <List>
         {
-          blog.comments.map(comment => <li key={comment.id}>{comment.comment}</li>)
+          blog.comments.map(comment =>
+            <List.Item key={comment.id}>
+              <List.Icon name='comment outline' />
+              <List.Content>{comment.comment}</List.Content>
+            </List.Item>
+          )
         }
-      </ul>
+      </List>
     </div>
   )
 }

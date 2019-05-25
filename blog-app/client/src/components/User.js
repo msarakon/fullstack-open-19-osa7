@@ -1,20 +1,24 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { Header, List } from 'semantic-ui-react'
 
 const User = ({ user }) => {
   if (!user) return null
 
   return (
     <div>
-      <h2>{user.name}</h2>
-      <h3>added blogs</h3>
-      <ul>
+      <Header as='h2'>{user.name}</Header>
+      <Header as='h3'>added blogs</Header>
+      <List>
         {
           user.blogs.map(blog =>
-            <li key={blog.id}>{blog.title}</li>
+            <List.Item key={blog.id}>
+              <List.Icon name='newspaper outline' />
+              <List.Content>{blog.title}</List.Content>
+            </List.Item>
           )
         }
-      </ul>
+      </List>
     </div>
   )
 }

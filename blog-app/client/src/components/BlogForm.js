@@ -1,6 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
+import { Button, Form } from 'semantic-ui-react'
 import useField from '../hooks/index'
 import { createBlog } from '../reducers/blogReducer'
 import { setNotification } from '../reducers/notificationReducer'
@@ -35,18 +36,21 @@ const BlogForm = (props) => {
   }
 
   return (
-    <form onSubmit={submit}>
-      <div>
-        title: <input {...title.input} />
-      </div>
-      <div>
-        author: <input {...author.input} />
-      </div>
-      <div>
-        url: <input {...url.input} />
-      </div>
-      <button type="submit">save</button>
-    </form>
+    <Form onSubmit={submit}>
+      <Form.Field>
+        <label>title</label>
+        <input {...title.input} />
+      </Form.Field>
+      <Form.Field>
+        <label>author</label>
+        <input {...author.input} />
+      </Form.Field>
+      <Form.Field>
+        <label>url</label>
+        <input {...url.input} />
+      </Form.Field>
+      <Button primary type="submit">save</Button>
+    </Form>
   )
 }
 

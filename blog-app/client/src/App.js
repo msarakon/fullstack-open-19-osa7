@@ -2,9 +2,10 @@ import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { BrowserRouter as Router, Route } from 'react-router-dom'
+import { Container, Divider, Header, Icon, Button, Segment, Form } from 'semantic-ui-react'
 import Navigation from './components/Navigation'
 import Blog from './components/Blog'
-import BlogRow from './components/BlogRow'
+import BlogList from './components/BlogList'
 import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
@@ -46,15 +47,20 @@ const App = (props) => {
   }
 
   const loginForm = () => (
-    <form onSubmit={handleLogin}>
-      <div>username <input {...username.input} /></div>
-      <div>password <input {...password.input} /></div>
-      <button type="submit">log in</button>
-    </form>
+    <Segment>
+      <Form onSubmit={handleLogin}>
+        <Form.Field>
+          <label>username</label>
+          <input {...username.input} />
+        </Form.Field>
+        <Form.Field>
+          <label>password</label>
+          <input {...password.input} />
+        </Form.Field>
+        <Button primary type="submit">log in</Button>
+      </Form>
+    </Segment>
   )
-
-  const blogList = () =>
-    props.blogs.map(blog => <BlogRow key={blog.id} blog={blog} />)
 
   const blogById = (id) =>
     props.blogs.find(blog => blog.id === id)
@@ -63,19 +69,25 @@ const App = (props) => {
     props.users.find(user => user.id === id)
 
   return (
-    <div>
+    <Container>
       {
         props.loggedUser === null ? loginForm() :
           <Router>
             <Navigation />
-            <h1>blogs</h1>
+            <Header as='h1'>
+              <Icon name='newspaper outline'/>
+              <Header.Content>blog app</Header.Content>
+            </Header>
             <Notification />
+            <Divider />
             <Route exact path='/' render={() =>
               <div>
-                <Togglable buttonLabel='create a new blog'>
-                  <BlogForm />
-                </Togglable>
-                {blogList()}
+                <Segment>
+                  <Togglable buttonLabel='create a new blog'>
+                    <BlogForm />
+                  </Togglable>
+                </Segment>
+                <BlogList />
               </div>
             } />
             <Route exact path='/users' render={() => <UserList /> } />
@@ -87,7 +99,7 @@ const App = (props) => {
             } />
           </Router>
       }
-    </div>
+    </Container>
   )
 }
 
