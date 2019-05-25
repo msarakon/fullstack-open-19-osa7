@@ -24,6 +24,11 @@ app.use(bodyParser.json())
 app.use(morgan(':method :url :status :body - :response-time ms'))
 app.use(middleware.tokenExtractor)
 
+if (process.env.NODE_ENV === 'test') {
+  const testingRouter = require('./controllers/testing')
+  app.use('/api/testing', testingRouter)
+}
+
 app.use('/api/login', loginRouter)
 app.use('/api/blogs', blogRouter)
 app.use('/api/users', userRouter)

@@ -125,6 +125,7 @@ beforeEach(async () => {
 
   const user = new User({
     username: 'blogger',
+    name: 'Blogger Man',
     passwordHash: '$2b$10$q/FLk8iUdwcU45xh.pSjcOtCgsEie8m9tT8ZVXpgeZOC3NUYIN8kG'
   })
   await user.save()

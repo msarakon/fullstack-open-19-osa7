@@ -21,7 +21,8 @@ module.exports = {
         'sourceType': 'module'
     },
     'plugins': [
-        'react'
+        'react',
+        'cypress'
     ],
     'settings': {
         'react': {

@@ -60,7 +60,7 @@ const Blog = (props) => {
     <div>
       <Header as='h2'>{blog.title} {blog.author}</Header>
       <p>
-        blog has {blog.likes} likes <Button compact icon onClick={like}>
+        blog has {blog.likes} like(s) <Button id='like-button' compact icon onClick={like}>
           <Icon name='like' />
           like
         </Button>
@@ -68,8 +68,8 @@ const Blog = (props) => {
       <p>added by {blog.user ? blog.user.name : '?'}</p>
       <Divider />
       <Header as='h3'>comments</Header>
-      <Input {...comment.input} action={
-        <Button primary onClick={addComment}>add comment</Button>
+      <Input id='new-comment' {...comment.input} action={
+        <Button id='save-comment' primary onClick={addComment}>add comment</Button>
       } />
       <List>
         {

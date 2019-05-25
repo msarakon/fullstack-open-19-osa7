@@ -42,15 +42,15 @@ const BlogForm = (props) => {
     <Form onSubmit={submit}>
       <Form.Field>
         <label>title</label>
-        <input {...title.input} />
+        <input id='new-blog-title' {...title.input} />
       </Form.Field>
       <Form.Field>
         <label>author</label>
-        <input {...author.input} />
+        <input id='new-blog-author' {...author.input} />
       </Form.Field>
       <Form.Field>
         <label>url</label>
-        <input {...url.input} />
+        <input id='new-blog-url' {...url.input} />
       </Form.Field>
       <Button primary type="submit">save</Button>
     </Form>
