@@ -41,6 +41,7 @@ blogRouter.put('/:id', async (request, response, next) => {
       request.body,
       { new: true })
       .populate('user', { username: 1, name : 1 })
+      .populate('comments')
     if (result) response.status(200).json(result)
     else response.status(404).end()
   } catch (error) {
@@ -78,7 +79,6 @@ blogRouter.post('/:id/comments', async (request, response, next) => {
     const result = await comment.save()
     blog.comments = blog.comments.concat(result._id)
     await blog.save()
-    console.log(result)
     response.status(201).json(result)
   } catch (error) {
     next(error)
