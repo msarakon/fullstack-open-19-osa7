@@ -1,10 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { updateBlog, removeBlog } from '../reducers/blogReducer'
+import useField from '../hooks/index'
+import { updateBlog, removeBlog, addComment } from '../reducers/blogReducer'
 import { setNotification } from '../reducers/notificationReducer'
 
 const Blog = (props) => {
+  const comment = useField('text')
+
   const blog = props.blog
   if (!blog) return null
 
@@ -30,6 +33,25 @@ const Blog = (props) => {
       user: blog.user ? blog.user.id : null
     })
 
+  const addComment = async () => {
+    try {
+      await props.addComment({
+        id: blog.id,
+        comment: comment.input.value
+      })
+      comment.reset()
+      props.setNotification({
+        message: 'new comment added',
+        style: null
+      }, 2000)
+    } catch (exception) {
+      props.setNotification({
+        message: 'failed to add a new comment',
+        style: 'error'
+      }, 2000)
+    }
+  }
+
   return (
     <div>
       <h2>{blog.title} {blog.author}</h2>
@@ -40,6 +62,9 @@ const Blog = (props) => {
         blog.user && <p>added by {blog.user.name}</p>
       }
       <h3>comments</h3>
+      <p>
+        <input {...comment.input} /> <button onClick={addComment}>add comment</button>
+      </p>
       <ul>
         {
           blog.comments.map(comment => <li key={comment.id}>{comment.comment}</li>)
@@ -52,6 +77,7 @@ const Blog = (props) => {
 const mapDispatchToProps = {
   updateBlog,
   removeBlog,
+  addComment,
   setNotification
 }
 
@@ -59,6 +85,7 @@ Blog.propTypes = {
   blog: PropTypes.object,
   updateBlog: PropTypes.func.isRequired,
   removeBlog: PropTypes.func.isRequired,
+  addComment: PropTypes.func.isRequired,
   setNotification: PropTypes.func.isRequired
 }
 

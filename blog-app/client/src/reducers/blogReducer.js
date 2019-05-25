@@ -9,6 +9,13 @@ const reducer = (state = [], action) => {
     return state.concat(action.data)
   case 'REMOVE_BLOG':
     return state.filter(b => b.id !== action.data)
+  case 'ADD_COMMENT':
+    return state.map(b =>
+      b.id === action.data.id ? {
+        ...b,
+        comments: b.comments.concat(action.data.comment)
+      } : b
+    )
   case 'INIT_BLOGS':
     return action.data
   default: return state
@@ -33,6 +40,16 @@ export const removeBlog = (id) => {
   return async dispatch => {
     await blogService.remove(id)
     dispatch({ type: 'REMOVE_BLOG', data: id })
+  }
+}
+
+export const addComment = (data) => {
+  return async dispatch => {
+    const comment = await blogService.addComment(data.id, data.comment)
+    dispatch({ type: 'ADD_COMMENT', data: {
+      id: data.id,
+      comment: comment
+    }})
   }
 }
 

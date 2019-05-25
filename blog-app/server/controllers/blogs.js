@@ -78,6 +78,7 @@ blogRouter.post('/:id/comments', async (request, response, next) => {
     const result = await comment.save()
     blog.comments = blog.comments.concat(result._id)
     await blog.save()
+    console.log(result)
     response.status(201).json(result)
   } catch (error) {
     next(error)
