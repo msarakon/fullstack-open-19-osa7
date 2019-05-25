@@ -28,6 +28,14 @@ describe('blog-app', function() {
       cy.contains('nothing yet!')
     })
 
+    it('the url field is required for creating a new blog', function() {
+      cy.contains('create a new blog').click()
+      cy.get('#new-blog-title').type('Lorem ipsum')
+      cy.get('#new-blog-author').type('Dolor sit Amet')
+      cy.contains('save').click()
+      cy.contains('failed to create a new blog')
+    })
+
     describe('with a blog created', function() {
       beforeEach(function() {
         cy.contains('create a new blog').click()
