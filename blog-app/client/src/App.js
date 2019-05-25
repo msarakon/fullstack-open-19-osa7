@@ -5,9 +5,8 @@ import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
-import blogService from './services/blogs'
 import useField from './hooks/index'
-import { login, setUser } from './reducers/loginReducer'
+import { login, logout, fetchUser } from './reducers/loginReducer'
 import { initBlogs, createBlog, updateBlog, removeBlog } from './reducers/blogReducer'
 import { setNotification } from './reducers/notificationReducer'
 
@@ -16,15 +15,11 @@ const App = (props) => {
 
   const username = useField('text')
   const password = useField('password')
+  const fetchUser = props.fetchUser
 
   useEffect(() => {
-    const loggedUser = window.localStorage.getItem('loggedBlogAppUser')
-    if (loggedUser) {
-      const user = JSON.parse(loggedUser)
-      blogService.setToken(user.token)
-      props.setUser(user)
-    }
-  }, [])
+    fetchUser()
+  }, [fetchUser])
 
   useEffect(() => {
     init()
@@ -41,13 +36,10 @@ const App = (props) => {
   const handleLogin = async (event) => {
     event.preventDefault()
     try {
-      const user = props.login({
+      await props.login({
         username: username.input.value,
         password: password.input.value
       })
-      window.localStorage.setItem('loggedBlogAppUser', JSON.stringify(user))
-      blogService.setToken(user.token)
-      props.setUser(user)
       username.reset()
       password.reset()
     } catch (exception) {
@@ -56,10 +48,7 @@ const App = (props) => {
     }
   }
 
-  const handleLogOut = () => {
-    props.setUser(null)
-    window.localStorage.removeItem('loggedBlogAppUser')
-  }
+  const handleLogOut = () => props.logout()
 
   const createBlog = async (title, author, url) => {
     try {
@@ -140,8 +129,9 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = {
-  setUser,
+  fetchUser,
   login,
+  logout,
   initBlogs,
   createBlog,
   updateBlog,
@@ -151,7 +141,8 @@ const mapDispatchToProps = {
 
 App.propTypes = {
   loggedUser: PropTypes.object,
-  setUser: PropTypes.func.isRequired,
+  fetchUser: PropTypes.func.isRequired,
+  logout: PropTypes.func.isRequired,
   login: PropTypes.func.isRequired,
   initBlogs: PropTypes.func.isRequired,
   blogs: PropTypes.array,
