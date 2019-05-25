@@ -1,10 +1,12 @@
 import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
+import { BrowserRouter as Router, Route } from 'react-router-dom'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
+ import User from './components/User'
 import useField from './hooks/index'
 import { login, logout, fetchUser } from './reducers/loginReducer'
 import { initBlogs } from './reducers/blogReducer'
@@ -55,18 +57,27 @@ const App = (props) => {
     <div>
       <h1>blogs</h1>
       <Notification />
-      {
-        props.loggedUser === null ? loginForm() :
-          <div>
-            <p>
-              {props.loggedUser.name} logged in <button onClick={handleLogOut}>log out</button>
-            </p>
-            <Togglable buttonLabel='create a new blog'>
-              <BlogForm />
-            </Togglable>
-            {blogList()}
-          </div>
-      }
+      <Router>
+        {
+          props.loggedUser === null ? loginForm() :
+            <div>
+              <p>
+                {props.loggedUser.name} logged in <button onClick={handleLogOut}>log out</button>
+              </p>
+              <Route exact path='/' render={() =>
+                <div>
+                  <Togglable buttonLabel='create a new blog'>
+                    <BlogForm />
+                  </Togglable>
+                  {blogList()}
+                </div>
+              } />
+            </div>
+        }
+        <Route path='/users' render={() =>
+          <h2>Users</h2>
+        } />
+      </Router>
     </div>
   )
 }
