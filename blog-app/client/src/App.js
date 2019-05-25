@@ -7,31 +7,19 @@ import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import useField from './hooks/index'
 import { login, logout, fetchUser } from './reducers/loginReducer'
-import { initBlogs, createBlog, updateBlog, removeBlog } from './reducers/blogReducer'
+import { initBlogs } from './reducers/blogReducer'
 import { setNotification } from './reducers/notificationReducer'
 
 const App = (props) => {
   const init = props.initBlogs
+  const fetchUser = props.fetchUser
 
   const username = useField('text')
   const password = useField('password')
-  const fetchUser = props.fetchUser
 
-  useEffect(() => {
-    fetchUser()
-  }, [fetchUser])
+  useEffect(() => { fetchUser() }, [fetchUser])
 
-  useEffect(() => {
-    init()
-  }, [init])
-
-  const showNotification = msg => {
-    props.setNotification({ message: msg, style: null }, 2000)
-  }
-
-  const showError = msg => {
-    props.setNotification({ message: msg, style: 'error' }, 2000)
-  }
+  useEffect(() => { init() }, [init])
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -43,41 +31,14 @@ const App = (props) => {
       username.reset()
       password.reset()
     } catch (exception) {
-      showError('wrong username or password')
-      setTimeout(() => showError(null), 5000)
+      props.setNotification({
+        message: 'wrong username or password',
+        style: 'error'
+      }, 5000)
     }
   }
 
   const handleLogOut = () => props.logout()
-
-  const createBlog = async (title, author, url) => {
-    try {
-      props.createBlog({ title, author, url })
-      showNotification(`a new blog "${title}" by ${author} added`)
-    } catch (exception) {
-      showError('failed to create a new blog')
-    }
-  }
-
-  const updateBlog = async (blog) => {
-    try {
-      props.updateBlog(blog)
-      showNotification(`"blog ${blog.title}" updated`)
-    } catch (exception) {
-      showError('failed to update the blog')
-    }
-  }
-
-  const removeBlog = async (blog) => {
-    if (window.confirm(`Are you sure you want to remove "${blog.title}" by ${blog.author}?`)) {
-      try {
-        props.removeBlog(blog.id)
-        showNotification(`"blog ${blog.title}" deleted`)
-      } catch (exception) {
-        showError('failed to remove the blog')
-      }
-    }
-  }
 
   const loginForm = () => (
     <form onSubmit={handleLogin}>
@@ -87,15 +48,8 @@ const App = (props) => {
     </form>
   )
 
-  const blogList = () => (
-    props.blogs.map(blog =>
-      <Blog key={blog.id}
-        blog={blog}
-        update={(blog) => updateBlog(blog)}
-        remove={(blog) => removeBlog(blog)}
-        loggedUser={props.loggedUser} />
-    )
-  )
+  const blogList = () =>
+    props.blogs.map(blog => <Blog key={blog.id} blog={blog} />)
 
   return (
     <div>
@@ -108,7 +62,7 @@ const App = (props) => {
               {props.loggedUser.name} logged in <button onClick={handleLogOut}>log out</button>
             </p>
             <Togglable buttonLabel='create a new blog'>
-              <BlogForm save={createBlog} />
+              <BlogForm />
             </Togglable>
             {blogList()}
           </div>
@@ -133,9 +87,6 @@ const mapDispatchToProps = {
   login,
   logout,
   initBlogs,
-  createBlog,
-  updateBlog,
-  removeBlog,
   setNotification
 }
 
@@ -146,9 +97,6 @@ App.propTypes = {
   login: PropTypes.func.isRequired,
   initBlogs: PropTypes.func.isRequired,
   blogs: PropTypes.array,
-  createBlog: PropTypes.func.isRequired,
-  updateBlog: PropTypes.func.isRequired,
-  removeBlog: PropTypes.func.isRequired,
   setNotification: PropTypes.func.isRequired
 }
 

@@ -1,9 +1,9 @@
 import React from 'react'
+import { Provider } from 'react-redux'
 import { render, waitForElement, act, cleanup } from 'react-testing-library'
 jest.mock('./services/blogs')
-import App from './App'
-import { Provider } from 'react-redux'
 import store from './store'
+import App from './App'
 
 afterEach(cleanup)
 

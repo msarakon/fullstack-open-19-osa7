@@ -1,5 +1,7 @@
 import React from 'react'
+import { Provider } from 'react-redux'
 import { render, fireEvent, cleanup } from 'react-testing-library'
+import store from '../store'
 import Blog from './Blog'
 
 afterEach(cleanup)
@@ -14,11 +16,9 @@ describe('Blog', () => {
       likes: 3,
       url: 'www.google.fi'
     }
-        
-    const user = { username: 'tester' }
-    
+ 
     component = render(
-      <Blog blog={blog} update={() => {}} remove={() => {}} loggedUser={user} />
+      <Provider store={store}><Blog blog={blog} /></Provider>
     )
   })
 
