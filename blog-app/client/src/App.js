@@ -6,22 +6,24 @@ import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
- import User from './components/User'
+import UserList from './components/UserList'
 import useField from './hooks/index'
 import { login, logout, fetchUser } from './reducers/loginReducer'
 import { initBlogs } from './reducers/blogReducer'
 import { setNotification } from './reducers/notificationReducer'
+import { initUsers } from './reducers/userReducer'
 
 const App = (props) => {
-  const init = props.initBlogs
+  const fetchBlogs = props.initBlogs
+  const fetchUsers = props.initUsers
   const fetchUser = props.fetchUser
 
   const username = useField('text')
   const password = useField('password')
 
   useEffect(() => { fetchUser() }, [fetchUser])
-
-  useEffect(() => { init() }, [init])
+  useEffect(() => { fetchBlogs() }, [fetchBlogs])
+  useEffect(() => { fetchUsers() }, [fetchUsers])
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -74,9 +76,7 @@ const App = (props) => {
               } />
             </div>
         }
-        <Route path='/users' render={() =>
-          <h2>Users</h2>
-        } />
+        <Route path='/users' render={() => <UserList /> } />
       </Router>
     </div>
   )
@@ -98,6 +98,7 @@ const mapDispatchToProps = {
   login,
   logout,
   initBlogs,
+  initUsers,
   setNotification
 }
 
@@ -107,6 +108,7 @@ App.propTypes = {
   logout: PropTypes.func.isRequired,
   login: PropTypes.func.isRequired,
   initBlogs: PropTypes.func.isRequired,
+  initUsers: PropTypes.func.isRequired,
   blogs: PropTypes.array,
   setNotification: PropTypes.func.isRequired
 }
